@@ -8,12 +8,14 @@ import { Dashboard } from './pages/Dashboard';
 import { ProductsList } from './pages/ProductsList';
 import { ProductForm } from './pages/ProductForm';
 import { OrdersList } from './pages/OrdersList';
+import { ClientQueries } from './pages/ClientQueries'; 
+import { CategoriesManager } from './pages/CategoriesManager'; // Cleaned up import positioning
 
 // High-Order Component to protect pages from unauthenticated access
 const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { auth } = useAuth();
 
-  // If user isn't logged in, redirect them immediately to admin login page (FLOW 1 Step 1)
+  // If user isn't logged in, redirect them immediately to admin login page
   if (!auth.isAuthenticated || auth.user?.role !== 'admin') {
     return <Navigate to="/admin/login" replace />;
   }
@@ -63,11 +65,32 @@ export default function App() {
               </ProtectedAdminRoute>
             } 
           />
+          
+          {/* Secure Route configuration for Category Management Interface */}
+          <Route 
+            path="/admin/categories" 
+            element={
+              <ProtectedAdminRoute>
+                <CategoriesManager />
+              </ProtectedAdminRoute>
+            } 
+          />
+
           <Route 
             path="/admin/orders" 
             element={
               <ProtectedAdminRoute>
                 <OrdersList />
+              </ProtectedAdminRoute>
+            } 
+          />
+
+          {/* Secure Route configuration for Client Queries Interface */}
+          <Route 
+            path="/admin/queries" 
+            element={
+              <ProtectedAdminRoute>
+                <ClientQueries />
               </ProtectedAdminRoute>
             } 
           />

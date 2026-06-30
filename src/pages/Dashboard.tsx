@@ -1,22 +1,52 @@
 // src/pages/Dashboard.tsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import productsData from '../products.json'; // Direct reference to products (1).json
+import productsData from '../products.json'; 
 
 export const Dashboard: React.FC = () => {
-  // Extract total products count directly from the verified data array
   const totalProducts = productsData.products.length;
 
-  // Simulated metrics for the month/last 24 hours as outlined in Flow 1 Step 3
   const [stats] = useState({
     totalOrdersThisMonth: 142,
-    monthlyRevenue: 45280,
+    clientQueriesPending: 8, // New metrics placeholder
     newOrders24h: 12
   });
 
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const cardsConfig = [
+    {
+      title: 'Total Products',
+      value: totalProducts,
+      footer: '✓ Active in inventory',
+      footerColor: '#10b981',
+      borderColor: 'transparent'
+    },
+    {
+      title: 'Total Orders (Month)',
+      value: stats.totalOrdersThisMonth,
+      footer: 'Target pacing normally',
+      footerColor: '#3b82f6',
+      borderColor: 'transparent'
+    },
+    {
+      title: 'Client Queries',
+      value: stats.clientQueriesPending,
+      footer: 'Requires agent response',
+      footerColor: '#ef4444',
+      borderColor: '#ef4444' // Red left accent border for urgent look
+    },
+    {
+      title: 'New Orders (24 Hours)',
+      value: stats.newOrders24h,
+      footer: 'Requires fulfillment actions',
+      footerColor: '#64748b',
+      borderColor: '#f59e0b'
+    }
+  ];
+
   return (
     <div>
-      {/* Welcome Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1e293b', margin: 0 }}>
           Welcome back, Admin!
@@ -26,80 +56,60 @@ export const Dashboard: React.FC = () => {
         </p>
       </div>
 
-      {/* Quick Stats Grid */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
         gap: '1.5rem', 
         marginBottom: '2.5rem' 
       }}>
-        {/* Total Products (Calculated from file) */}
-        <div style={{ backgroundColor: '#fff', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>Total Products</div>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#0f172a', marginTop: '0.5rem' }}>{totalProducts}</div>
-          <div style={{ fontSize: '0.75rem', color: '#10b981', marginTop: '0.5rem' }}>✓ Active in inventory</div>
-        </div>
+        {cardsConfig.map((card, index) => {
+          const isHovered = hoveredIndex === index;
 
-        {/* Total Orders This Month */}
-        <div style={{ backgroundColor: '#fff', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>Total Orders (Month)</div>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#0f172a', marginTop: '0.5rem' }}>{stats.totalOrdersThisMonth}</div>
-          <div style={{ fontSize: '0.75rem', color: '#3b82f6', marginTop: '0.5rem' }}>Target pacing normally</div>
-        </div>
-
-        {/* Revenue This Month */}
-        <div style={{ backgroundColor: '#fff', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>Revenue (Month)</div>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#0f172a', marginTop: '0.5rem' }}>${stats.monthlyRevenue.toLocaleString()}</div>
-          <div style={{ fontSize: '0.75rem', color: '#10b981', marginTop: '0.5rem' }}>+12.4% vs last month</div>
-        </div>
-
-        {/* New Orders (Last 24 Hours) */}
-        <div style={{ backgroundColor: '#fff', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', borderLeft: '4px solid #f59e0b' }}>
-          <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>New Orders (24 Hours)</div>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#f59e0b', marginTop: '0.5rem' }}>{stats.newOrders24h}</div>
-          <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>Requires fulfillment actions</div>
-        </div>
+          return (
+            <div
+              key={index}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              style={{
+                backgroundColor: '#fff',
+                padding: '1.5rem',
+                borderRadius: '0.5rem',
+                borderLeft: card.borderColor !== 'transparent' ? `4px solid ${card.borderColor}` : 'none',
+                transform: isHovered ? 'translateY(-5px)' : 'translateY(0px)',
+                boxShadow: isHovered 
+                  ? '0 10px 20px -5px rgba(15, 23, 42, 0.15), 0 8px 8px -5px rgba(15, 23, 42, 0.1)' 
+                  : '0 1px 3px rgba(0,0,0,0.1)',
+                transition: 'all 0.25s ease-in-out',
+                cursor: 'default'
+              }}
+            >
+              <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>
+                {card.title}
+              </div>
+              <div style={{ fontSize: '2rem', fontWeight: '700', color: '#0f172a', marginTop: '0.5rem' }}>
+                {card.value}
+              </div>
+              <div style={{ fontSize: '0.75rem', color: card.footerColor, marginTop: '0.5rem' }}>
+                {card.footer}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Quick Links To Main Sections */}
       <div style={{ backgroundColor: '#fff', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1e293b', marginBottom: '1rem', marginTop: 0 }}>
           ⚡ Quick Administrative Actions
         </h3>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Link to="/admin/products" style={{ 
-            padding: '0.75rem 1.25rem', 
-            backgroundColor: '#3b82f6', 
-            color: '#fff', 
-            textDecoration: 'none', 
-            borderRadius: '0.375rem', 
-            fontWeight: '500',
-            fontSize: '0.875rem'
-          }}>
+          <Link to="/admin/products" style={{ padding: '0.75rem 1.25rem', backgroundColor: '#3b82f6', color: '#fff', textDecoration: 'none', borderRadius: '0.375rem', fontWeight: '500', fontSize: '0.875rem' }}>
             📋 Manage Product Catalog
           </Link>
-          <Link to="/admin/products/new" style={{ 
-            padding: '0.75rem 1.25rem', 
-            backgroundColor: '#10b981', 
-            color: '#fff', 
-            textDecoration: 'none', 
-            borderRadius: '0.375rem', 
-            fontWeight: '500',
-            fontSize: '0.875rem'
-          }}>
-            ➕ Add New Product
-          </Link>
-          <Link to="/admin/orders" style={{ 
-            padding: '0.75rem 1.25rem', 
-            backgroundColor: '#6366f1', 
-            color: '#fff', 
-            textDecoration: 'none', 
-            borderRadius: '0.375rem', 
-            fontWeight: '500',
-            fontSize: '0.875rem'
-          }}>
+          <Link to="/admin/orders" style={{ padding: '0.75rem 1.25rem', backgroundColor: '#6366f1', color: '#fff', textDecoration: 'none', borderRadius: '0.375rem', fontWeight: '500', fontSize: '0.875rem' }}>
             📦 View Incoming Orders
+          </Link>
+          <Link to="/admin/queries" style={{ padding: '0.75rem 1.25rem', backgroundColor: '#ef4444', color: '#fff', textDecoration: 'none', borderRadius: '0.375rem', fontWeight: '500', fontSize: '0.875rem' }}>
+            💬 Respond to Client Queries
           </Link>
         </div>
       </div>

@@ -9,9 +9,7 @@ export const ProductsList: React.FC = () => {
   
   // 1. Initial local product list setup
   const [products, setProducts] = useState<Product[]>(() => {
-    // Casting via 'any' first bypasses the rigid nested 'specs' structural type conflict cleanly
     const rawProducts = productsData.products as any[];
-    
     return rawProducts.map((prod, index) => ({
       ...prod,
       stockQuantity: prod.id === 'giantbookpro14' ? 5 : 25 + index,
@@ -23,14 +21,13 @@ export const ProductsList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
 
-  // 🛠️ 3. Filter Logic (Combines search input match AND category dropdown selection)
+  // 🛠️ 3. Smart Filter Logic
   const filteredProducts = products.filter(product => {
-    // Check if the name or category matches the search bar text input
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           product.category.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // Check if the dropdown matches the product category
-    const matchesCategory = selectedCategory === 'All Categories' || 
+    const matchesCategory = searchQuery !== '' || 
+                            selectedCategory === 'All Categories' || 
                             product.categoryId === selectedCategory;
 
     return matchesSearch && matchesCategory;
@@ -62,7 +59,7 @@ export const ProductsList: React.FC = () => {
       </div>
 
       {/* 🔍 FILTER BAR SECTION */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
         {/* Search Bar Input */}
         <div style={{ flex: 1, minWidth: '280px', position: 'relative' }}>
           <input
@@ -107,6 +104,20 @@ export const ProductsList: React.FC = () => {
             ))}
           </select>
         </div>
+      </div>
+
+      {/* 📊 DYNAMIC AMOUNT / COUNT BADGE AREA */}
+      <div style={{ 
+        marginBottom: '1rem', 
+        fontSize: '0.925rem', 
+        color: '#475569', 
+        fontWeight: '600',
+        backgroundColor: '#e2e8f0',
+        padding: '0.5rem 1rem',
+        borderRadius: '0.375rem',
+        display: 'inline-block'
+      }}>
+        {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
       </div>
 
       {/* Main Responsive Table */}
@@ -161,7 +172,7 @@ export const ProductsList: React.FC = () => {
         </table>
         
         {filteredProducts.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '0.95rem' }}>
+          <div style={{ textTransform: 'none', textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '0.95rem' }}>
             No products match your search query or selected category filter.
           </div>
         )}

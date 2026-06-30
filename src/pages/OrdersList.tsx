@@ -1,14 +1,12 @@
 // src/pages/OrdersList.tsx
 import React, { useState } from 'react';
-import productsData from '../products.json'; // Perfectly referenced relative path
+import productsData from '../products.json'; 
 import { Order } from '../types';
 
 export const OrdersList: React.FC = () => {
-  // Grab items out of the JSON catalog safely
   const mockProductA = productsData.products[0];
   const mockProductB = productsData.products[1];
 
-  // Initialize unified orders dataset matching FLOW 3 specs
   const [orders, setOrders] = useState<Order[]>([
     {
       id: 'ORD-2026-9941',
@@ -47,23 +45,19 @@ export const OrdersList: React.FC = () => {
     }
   ]);
 
-  // View Details Modal State Configuration
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [trackingInput, setTrackingInput] = useState('');
 
-  // FLOW 3 Step 3: Change/Update Status Dropdown action
   const handleStatusChange = (orderId: string, newStatus: Order['status']) => {
     setOrders(prevOrders =>
       prevOrders.map(order => (order.id === orderId ? { ...order, status: newStatus } : order))
     );
-    // Sync active detail modal view parameters if open
     if (selectedOrder && selectedOrder.id === orderId) {
       setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
     }
     alert('Order status updated');
   };
 
-  // FLOW 3 Step 4: Add tracking identifier sequence
   const handleSaveTracking = (orderId: string) => {
     if (!trackingInput.trim()) {
       alert('Please enter a valid tracking reference text.');
@@ -79,6 +73,15 @@ export const OrdersList: React.FC = () => {
     setTrackingInput('');
   };
 
+  // 🗑️ Delete Order Handler
+  const handleDeleteOrder = (id: string) => {
+    const confirmDelete = window.confirm(`Are you sure you want to delete order "${id}"?`);
+    if (confirmDelete) {
+      setOrders(prevOrders => prevOrders.filter(order => order.id !== id));
+      alert('Order deleted!');
+    }
+  };
+
   return (
     <div>
       <div>
@@ -86,7 +89,6 @@ export const OrdersList: React.FC = () => {
         <p style={{ color: '#64748b', marginTop: '0.25rem' }}>Fulfill client invoices, modify pipeline lifecycle status, and input tracking identifiers.</p>
       </div>
 
-      {/* Main Orders Presentation Table */}
       <div style={{ backgroundColor: '#fff', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflowX: 'auto', marginTop: '2rem' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '900px' }}>
           <thead>
@@ -109,7 +111,6 @@ export const OrdersList: React.FC = () => {
                 <td style={{ padding: '1rem', color: '#64748b' }}>{order.orderDate}</td>
                 <td style={{ padding: '1rem', fontWeight: '600', color: '#0f172a' }}>${order.totalAmount}</td>
                 
-                {/* Status Dropdown Inline Update Action */}
                 <td style={{ padding: '1rem' }}>
                   <select
                     value={order.status}
@@ -132,13 +133,47 @@ export const OrdersList: React.FC = () => {
                   </select>
                 </td>
 
+                {/* 🛠️ Action Buttons Column (With new Delete Button) */}
                 <td style={{ padding: '1rem', textAlign: 'right' }}>
-                  <button
-                    onClick={() => { setSelectedOrder(order); setTrackingInput(order.trackingNumber || ''); }}
-                    style={{ padding: '0.375rem 0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: '500' }}
-                  >
-                    View Details
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                    <button
+                      onClick={() => { setSelectedOrder(order); setTrackingInput(order.trackingNumber || ''); }}
+                      style={{ padding: '0.375rem 0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: '500' }}
+                    >
+                      View Details
+                    </button>
+                    {/* Clean SVG Outline Delete Button */}
+                    <button
+                      onClick={() => handleDeleteOrder(order.id)}
+                      title="Delete Order"
+                      style={{ 
+                        padding: '0.375rem 0.625rem', 
+                        backgroundColor: 'transparent', 
+                        border: 'none', 
+                        cursor: 'pointer', 
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <svg 
+                        width="20" 
+                        height="22" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="#ef4444" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                      </svg>
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -146,7 +181,7 @@ export const OrdersList: React.FC = () => {
         </table>
       </div>
 
-      {/* Overlay Modal View Order Details Backdrop */}
+      {/* Modal View Details */}
       {selectedOrder && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '1rem' }}>
           <div style={{ backgroundColor: '#fff', borderRadius: '0.5rem', width: '100%', maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto', padding: '2rem', boxSizing: 'border-box', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
@@ -156,7 +191,6 @@ export const OrdersList: React.FC = () => {
               <button onClick={() => setSelectedOrder(null)} style={{ border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>&times;</button>
             </div>
 
-            {/* Customer Info Box */}
             <div style={{ backgroundColor: '#f8fafc', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.25rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.875rem' }}>
               <div><strong>Client Name:</strong> {selectedOrder.customerName}</div>
               <div><strong>Email Log:</strong> {selectedOrder.customerEmail}</div>
@@ -164,7 +198,6 @@ export const OrdersList: React.FC = () => {
               <div><strong>Date Stamps:</strong> {selectedOrder.orderDate}</div>
             </div>
 
-            {/* Items table list representation */}
             <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', color: '#1e293b' }}>Line Items Ledger</h4>
             <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.375rem', overflow: 'hidden', marginBottom: '1.25rem' }}>
               {selectedOrder.items.map((item, index) => (
@@ -178,14 +211,12 @@ export const OrdersList: React.FC = () => {
               ))}
             </div>
 
-            {/* Logistics & Payment Framework Info */}
+            {/* Logistics Framework Info (Merchant Billing gateway has been removed) */}
             <div style={{ fontSize: '0.875rem', color: '#334155', marginBottom: '1.25rem', lineHeight: '1.5' }}>
               <div>📍 <strong>Shipping Destination Address:</strong> {selectedOrder.shippingAddress}</div>
               <div>🚚 <strong>Chosen Courier Route Method:</strong> {selectedOrder.shippingMethod}</div>
-              <div>💳 <strong>Merchant Billing gateway:</strong> {selectedOrder.paymentMethod}</div>
             </div>
 
-            {/* Dynamic Financial Cost Breakdown Section */}
             <div style={{ width: '220px', marginLeft: 'auto', fontSize: '0.875rem', borderTop: '2px solid #e2e8f0', paddingTop: '0.5rem', marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Subtotal:</span><span>${selectedOrder.breakdown.subtotal}</span></div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Tax:</span><span>${selectedOrder.breakdown.tax}</span></div>
@@ -194,9 +225,8 @@ export const OrdersList: React.FC = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700', fontSize: '1rem', borderTop: '1px solid #cbd5e1', paddingTop: '0.25rem', marginTop: '0.25rem' }}><span>Grand Total:</span><span>${selectedOrder.totalAmount}</span></div>
             </div>
 
-            {/* Tracking Input Management Component Box */}
             <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <label style={{ fontSize: '0.875rem', fontWeight: '600', color: '#334155' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: '600', color: '#344155' }}>
                 Courier Dispatch Tracking Identifier Code
               </label>
               {selectedOrder.trackingNumber ? (

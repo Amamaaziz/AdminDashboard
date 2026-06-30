@@ -17,10 +17,13 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     navigate('/admin/login');
   };
 
+  // Registered matching dynamic paths here
   const navigationItems = [
     { name: '📊 Dashboard', path: '/admin' },
     { name: '📱 Products', path: '/admin/products' },
+    { name: '📂 Categories', path: '/admin/categories' }, // ✨ Added
     { name: '📦 Orders', path: '/admin/orders' },
+    { name: '💬 Queries', path: '/admin/queries' },       // ✨ Added
   ];
 
   return (
