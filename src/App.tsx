@@ -9,6 +9,8 @@ import { ProductsList } from './pages/ProductsList';
 import { ProductForm } from './pages/ProductForm';
 import { OrdersList } from './pages/OrdersList';
 import { ClientQueries } from './pages/ClientQueries'; 
+import { ProjectsManager } from './pages/ProjectsManager';
+import { BlogsManager } from './pages/BlogsManager';
 import { CategoriesManager } from './pages/CategoriesManager'; // Cleaned up import positioning
 
 // High-Order Component to protect pages from unauthenticated access
@@ -65,7 +67,14 @@ export default function App() {
               </ProtectedAdminRoute>
             } 
           />
-          
+          <Route 
+            path="/admin/blogs" 
+            element={
+              <ProtectedAdminRoute>
+                <BlogsManager />
+              </ProtectedAdminRoute>
+            } 
+          />
           {/* Secure Route configuration for Category Management Interface */}
           <Route 
             path="/admin/categories" 
@@ -91,6 +100,14 @@ export default function App() {
             element={
               <ProtectedAdminRoute>
                 <ClientQueries />
+              </ProtectedAdminRoute>
+            } 
+          />\
+          <Route 
+            path="/admin/projects" 
+            element={
+              <ProtectedAdminRoute>
+                <ProjectsManager />
               </ProtectedAdminRoute>
             } 
           />

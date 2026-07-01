@@ -17,21 +17,23 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     navigate('/admin/login');
   };
 
-  // Registered matching dynamic paths here
   const navigationItems = [
     { name: '📊 Dashboard', path: '/admin' },
     { name: '📱 Products', path: '/admin/products' },
-    { name: '📂 Categories', path: '/admin/categories' }, // ✨ Added
+    { name: '📂 Categories', path: '/admin/categories' },
+    { name: '🛠️ Projects', path: '/admin/projects' },
+    { name: '📝 Blog Section', path: '/admin/blogs' },
     { name: '📦 Orders', path: '/admin/orders' },
-    { name: '💬 Queries', path: '/admin/queries' },       // ✨ Added
+    { name: '💬 Queries', path: '/admin/queries' },
   ];
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'system-ui, sans-serif', backgroundColor: '#f3f4f6' }}>
       {/* Sidebar */}
       <aside style={{ width: '260px', backgroundColor: '#1e293b', color: '#fff', padding: '1.5rem' }}>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: '2rem', borderBottom: '1px solid #334155', paddingBottom: '1rem' }}>
-          🛒 Admin Panel
+        {/* ✨ CHANGED: Branding Header updated to Vision Giants */}
+        <h2 style={{ fontSize: '1.25rem', marginBottom: '2rem', borderBottom: '1px solid #334155', paddingBottom: '1rem', fontWeight: '700', letterSpacing: '0.025em' }}>
+          🚀 Vision Giants
         </h2>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {navigationItems.map((item) => {

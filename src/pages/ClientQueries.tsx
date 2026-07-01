@@ -76,7 +76,6 @@ export const ClientQueries: React.FC = () => {
               <th style={{ padding: '1rem', color: '#64748b', fontWeight: '600' }}>Ticket ID</th>
               <th style={{ padding: '1rem', color: '#64748b', fontWeight: '600' }}>Client</th>
               <th style={{ padding: '1rem', color: '#64748b', fontWeight: '600' }}>Subject</th>
-              <th style={{ padding: '1rem', color: '#64748b', fontWeight: '600' }}>Priority</th>
               <th style={{ padding: '1rem', color: '#64748b', fontWeight: '600' }}>Status</th>
               <th style={{ padding: '1rem', color: '#64748b', fontWeight: '600', textAlign: 'right' }}>Actions</th>
             </tr>
@@ -89,11 +88,7 @@ export const ClientQueries: React.FC = () => {
                 </td>
                 <td style={{ padding: '1rem', color: '#0f172a', fontWeight: '500' }}>{q.clientName}</td>
                 <td style={{ padding: '1rem', color: '#475569' }}>{q.subject}</td>
-                <td style={{ padding: '1rem' }}>
-                  <span style={{ padding: '0.25rem 0.5rem', borderRadius: '0.25rem', fontSize: '0.75rem', fontWeight: '600', backgroundColor: q.priority === 'High' ? '#fee2e2' : q.priority === 'Medium' ? '#fef3c7' : '#f1f5f9', color: q.priority === 'High' ? '#ef4444' : q.priority === 'Medium' ? '#d97706' : '#64748b' }}>
-                    {q.priority}
-                  </span>
-                </td>
+                
                 <td style={{ padding: '1rem' }}>
                   <span style={{ padding: '0.25rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '600', backgroundColor: q.status === 'Unread' ? '#fee2e2' : q.status === 'In Progress' ? '#e0f2fe' : '#dcfce7', color: q.status === 'Unread' ? '#ef4444' : q.status === 'In Progress' ? '#0284c7' : '#16a34a' }}>
                     {q.status}
